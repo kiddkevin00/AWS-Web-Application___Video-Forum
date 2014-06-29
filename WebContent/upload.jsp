@@ -15,44 +15,47 @@
 	smartUpload.setMaxFileSize(maxSize);
 	smartUpload.upload();
 
-	uploadCount = smartUpload.getFiles().getCount();
 	videoName = smartUpload.getRequest().getParameter("video_title");
+	if (!videoName.equals("")) {
+		uploadCount = smartUpload.getFiles().getCount();
 
-	System.out.println("Upload Count : " + uploadCount + "\n"
-			+ "Video Name : " + videoName);
+		System.out.println("Upload Count : " + uploadCount + "\n"
+				+ "Video Name : " + videoName);
 
-	String bucketName = "fromhomepage";
-	String savedFilePath;
+		String bucketName = "fromhomepage";
+		String savedFilePath;
 
-	savedFilePath = getClass().getResource("/").getPath() + videoName;
-	System.out.println("Saved file path : " + savedFilePath);
+		savedFilePath = getClass().getResource("/").getPath()
+				+ videoName;
+		System.out.println("Saved file path : " + savedFilePath);
 
-	com.jspsmart.upload.File uploadedFile = smartUpload.getFiles()
-			.getFile(0);
+		com.jspsmart.upload.File uploadedFile = smartUpload.getFiles()
+				.getFile(0);
+		// save physically in (secondary)File system, which can be accessed by java.io.File 
+		uploadedFile.saveAs(savedFilePath, smartUpload.SAVE_PHYSICAL);
+		// Access the file by the provided path 
+		java.io.File savedFile = new File(savedFilePath);
+		savedFile.deleteOnExit();
 
-	// save physically in (secondary)File system, which can be accessed by java.io.File 
-	uploadedFile.saveAs(savedFilePath, smartUpload.SAVE_PHYSICAL);
-	// Access the file by the provided path 
-	java.io.File savedFile = new File(savedFilePath);
-	savedFile.deleteOnExit();
+		// create a sample text file
+		File sampleFile = S3Controller.createSampleFile();
+		System.out
+				.println("Sample File Name : " + sampleFile.getName());
 
-	// create a sample text file
-	File sampleFile = S3Controller.createSampleFile();
-	System.out.println("Sample File Name : " + sampleFile.getName());
+		S3Controller s3Controller = new S3Controller();
+		s3Controller.uploadToS3(videoName, bucketName, savedFile);
 
-	S3Controller s3Controller = new S3Controller();
-	s3Controller.uploadToS3(videoName, bucketName, savedFile);
+		ArrayList<String> bucketList = new ArrayList<String>();
+		bucketList = s3Controller.listBucketName();
 
-	ArrayList<String> bucketList = new ArrayList<String>();
-	bucketList = s3Controller.listBucketName();
+		com.amazonaws.services.s3.model.S3Object object = s3Controller.s3Client
+				.getObject(new GetObjectRequest(bucketName, videoName
+						+ "_key"));
+		S3Controller.displayOnConsole(object.getObjectContent());
 
-	com.amazonaws.services.s3.model.S3Object object = s3Controller.s3Client
-			.getObject(new GetObjectRequest(bucketName, videoName
-					+ "_key"));
-	S3Controller.displayOnConsole(object.getObjectContent());
-
-	ArrayList<String> objectList = new ArrayList<String>();
-	objectList = s3Controller.listObjectName(bucketName);
+		ArrayList<String> objectList = new ArrayList<String>();
+		objectList = s3Controller.listObjectName(bucketName);
+	}
 
 	// delete a bucket including all obejcts inside
 	//s3Controller.deleteAllObejctInBucket(bucketName);

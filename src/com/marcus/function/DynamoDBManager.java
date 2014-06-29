@@ -1,5 +1,6 @@
 package com.marcus.function;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +37,18 @@ public class DynamoDBManager {
 		map.put(key1, new AttributeValue(item1));
 		map.put(key2, new AttributeValue(item2));
 		return map;
+
+	}
+
+	// TODO..
+	public void deleteATable() {
+
+	}
+
+	// TODO..
+	public ArrayList<String> listingAllTables() {
+		ArrayList<String> tableList = new ArrayList<String>();
+		return tableList;
 
 	}
 }

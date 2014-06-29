@@ -20,6 +20,21 @@
 		<!-- Include all compiled plugins (below), or include individual files as needed -->
 		<script src="./js/bootstrap.min.js"></script>
 
+		<script>
+			function validateFunction() {
+				var userInput = document.getElementById("videoName").value;
+				console.log("User input is : " + userInput);
+				try {
+					if (userInput == "") {
+						console.log('here');
+						throw "Please Enter a Video Name";
+					}
+				} catch(err) {
+					alert("Warning : " + err);
+				}
+			}
+		</script>
+
 	</head>
 	<body>
 		<h1>Welcome to Home Page</h1>
@@ -53,7 +68,7 @@
 						<input type="file" id="file" name="file1" />
 					</div>
 
-					<button type="submit" class="btn btn-default">
+					<button onclick="validateFunction()" type="submit" class="btn btn-default">
 						Upload
 					</button>
 				</fieldset>

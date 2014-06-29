@@ -10,11 +10,13 @@
 	ArrayList<String> urlList = new ArrayList<String>();
 
 	objectList = s3Controller.listObjectName(bucketName);
-	for (String object : objectList) {
-		urlList.add("http://" + bucketName + ".s3.amazonaws.com/"
-				+ object);
-		System.out.println("http://" + bucketName
-				+ ".s3.amazonaws.com/" + object);
+	if (objectList.size() != 0) {
+		for (String object : objectList) {
+			urlList.add("http://" + bucketName + ".s3.amazonaws.com/"
+					+ object);
+			System.out.println("http://" + bucketName
+					+ ".s3.amazonaws.com/" + object);
+		}
 	}
 %>
 
@@ -29,7 +31,7 @@
 		for (int i = 0; i < urlList.size(); i++) {
 	%>
 	<video width="320" height="240" controls> <source
-		src="<%=urlList.get(1)%>" type="video/mp4"> Your browser does
+		src="<%=urlList.get(i)%>" type="video/mp4"> Your browser does
 	not support the video tag. </video>
 	<%
 		}
