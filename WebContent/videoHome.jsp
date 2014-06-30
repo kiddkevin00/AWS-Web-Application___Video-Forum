@@ -1,22 +1,38 @@
-<%@page import="java.util.ArrayList"%>
+<%@page import="com.marcus.function.DynamoDBManager"%>
+<%@page import="java.util.*"%>
 <%@page import="com.marcus.function.S3Controller"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 
 <%
 	String bucketName = "fromhomepage";
-	S3Controller s3Controller = new S3Controller();
+	String tableName = "videoInfo";
+	//S3Controller s3Controller = new S3Controller();
 	ArrayList<String> objectList = new ArrayList<String>();
 	ArrayList<String> urlList = new ArrayList<String>();
 
-	objectList = s3Controller.listObjectName(bucketName);
-	if (objectList.size() != 0) {
+	//objectList = s3Controller.listObjectName(bucketName);
+	DynamoDBManager dynamoDBManager = new DynamoDBManager();
+	List<Map<String, String>> items = new ArrayList<Map<String, String>>();
+	items = dynamoDBManager.listAllItemInATable(tableName);
+
+	/* if (objectList.size() != 0) {
 		for (String object : objectList) {
 			urlList.add("http://" + bucketName + ".s3.amazonaws.com/"
 					+ object);
 			System.out.println("http://" + bucketName
 					+ ".s3.amazonaws.com/" + object);
 		}
+	} */
+	
+	if (items.size() != 0) {
+		for (Map<String, String> item : items) {
+			urlList.add("http://" + item.get("bucketName") + ".s3.amazonaws.com/"
+					+ item.get("videoKey"));
+			System.out.println("http://" + item.get("bucketName") + ".s3.amazonaws.com/"
+					+ item.get("videoKey"));
+		}
+		
 	}
 %>
 

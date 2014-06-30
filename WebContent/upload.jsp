@@ -1,5 +1,7 @@
+<%@page import="com.amazonaws.services.dynamodbv2.model.AttributeValue"%>
+<%@page import="com.marcus.function.DynamoDBManager"%>
 <%@page import="com.amazonaws.services.s3.model.GetObjectRequest"%>
-<%@page import="java.util.ArrayList"%>
+<%@page import="java.util.*"%>
 <%@page import="java.io.File"%>
 <%@page import="com.marcus.function.S3Controller"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -16,13 +18,13 @@
 	smartUpload.upload();
 
 	videoName = smartUpload.getRequest().getParameter("video_title");
+	String bucketName = "fromhomepage";
 	if (!videoName.equals("")) {
 		uploadCount = smartUpload.getFiles().getCount();
 
 		System.out.println("Upload Count : " + uploadCount + "\n"
 				+ "Video Name : " + videoName);
 
-		String bucketName = "fromhomepage";
 		String savedFilePath;
 
 		savedFilePath = getClass().getResource("/").getPath()
@@ -55,13 +57,34 @@
 
 		ArrayList<String> objectList = new ArrayList<String>();
 		objectList = s3Controller.listObjectName(bucketName);
+
+		// delete a bucket including all obejcts inside
+		s3Controller.deleteAllObejctInBucket(bucketName);
+
+		// delete all bucket in S3
+		s3Controller.deleteAllBucketInS3();
+
 	}
 
-	// delete a bucket including all obejcts inside
-	//s3Controller.deleteAllObejctInBucket(bucketName);
+	// Storing info to DynamoDB
+	DynamoDBManager dynamoDBManager = new DynamoDBManager();
+	String tableName = "videoInfo";
 
-	// delete all bucket in S3
-	//s3Controller.deleteAllBucketInS3();
+	dynamoDBManager.createTable(tableName);
+
+	dynamoDBManager.saveAItemToDynamoDB(tableName, "bucketName",
+			bucketName, "videoKey", videoName);
+
+	List<String> tables = new ArrayList<String>();
+	tables = dynamoDBManager.listingAllTables();
+	//System.out.println("All Table Name : " + tables.get(0)+ "  "+ tables.get(1));
+	List<Map<String, String>> items = new ArrayList<Map<String, String>>();
+	items = dynamoDBManager.listAllItemInATable(tableName);
+	System.out.println("All items : " + items.get(0).get("videoKey")
+			+ items.get(0).get("bucketName"));
+
+	// delete all table in DynamoDB
+	dynamoDBManager.deleteAllTable();
 
 	response.sendRedirect("videoHome.jsp?status=complete");
 %>
