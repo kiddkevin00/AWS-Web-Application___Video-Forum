@@ -1,3 +1,4 @@
+<%@page import="com.marcus.function.SNSManager"%>
 <%@page import="com.marcus.function.RDSManager"%>
 <%@page import="com.amazonaws.services.dynamodbv2.model.AttributeValue"%>
 <%@page import="com.marcus.function.DynamoDBManager"%>
@@ -13,64 +14,83 @@
 	int uploadCount = 0;
 	String videoName = "";
 
-	SmartUpload smartUpload = new SmartUpload();
-	smartUpload.initialize(pageContext);
-	smartUpload.setMaxFileSize(maxSize);
-	smartUpload.upload();
+	boolean debugMode = true;
 
-	videoName = smartUpload.getRequest().getParameter("video_title");
-	String bucketName = "fromhomepage";
-	if (!videoName.equals("")) {
-		uploadCount = smartUpload.getFiles().getCount();
+	if (!(debugMode)) {
+		SmartUpload smartUpload = new SmartUpload();
+		smartUpload.initialize(pageContext);
+		smartUpload.setMaxFileSize(maxSize);
+		smartUpload.upload();
 
-		System.out.println("Upload Count : " + uploadCount + "\n"
-				+ "Video Name : " + videoName);
+		videoName = smartUpload.getRequest()
+				.getParameter("video_title");
+		String bucketName = "fromhomepage";
+		if (!videoName.equals("")) {
+			uploadCount = smartUpload.getFiles().getCount();
 
-		String savedFilePath;
+			System.out.println("Upload Count : " + uploadCount + "\n"
+					+ "Video Name : " + videoName);
 
-		savedFilePath = getClass().getResource("/").getPath()
-				+ videoName;
-		System.out.println("Saved file path : " + savedFilePath);
+			String savedFilePath;
 
-		com.jspsmart.upload.File uploadedFile = smartUpload.getFiles()
-				.getFile(0);
-		// save physically in (secondary)File system, which can be accessed by java.io.File 
-		uploadedFile.saveAs(savedFilePath, smartUpload.SAVE_PHYSICAL);
-		// Access the file by the provided path 
-		java.io.File savedFile = new File(savedFilePath);
-		savedFile.deleteOnExit();
+			savedFilePath = getClass().getResource("/").getPath()
+					+ videoName;
+			System.out.println("Saved file path : " + savedFilePath);
 
-		// storing video to S3:
-		S3Controller s3Controller = new S3Controller();
-		s3Controller.uploadToS3(videoName, bucketName, savedFile);
+			com.jspsmart.upload.File uploadedFile = smartUpload
+					.getFiles().getFile(0);
+			// save physically in (secondary)File system, which can be accessed by java.io.File 
+			uploadedFile.saveAs(savedFilePath,
+					smartUpload.SAVE_PHYSICAL);
+			// Access the file by the provided path 
+			java.io.File savedFile = new File(savedFilePath);
+			savedFile.deleteOnExit();
 
-		ArrayList<String> bucketList = new ArrayList<String>();
-		bucketList = s3Controller.listBucketName();
+			// storing video to S3:
+			S3Controller s3Controller = new S3Controller();
+			s3Controller.uploadToS3(videoName, bucketName, savedFile);
 
-		com.amazonaws.services.s3.model.S3Object object = s3Controller.s3Client
-				.getObject(new GetObjectRequest(bucketName, videoName
-						+ "_key"));
-		S3Controller.displayOnConsole(object.getObjectContent());
+			ArrayList<String> bucketList = new ArrayList<String>();
+			bucketList = s3Controller.listBucketName();
 
-		// **delete a bucket including all obejcts inside
-		//s3Controller.deleteAllObejctInBucket(bucketName);
+			com.amazonaws.services.s3.model.S3Object object = s3Controller.s3Client
+					.getObject(new GetObjectRequest(bucketName,
+							videoName + "_key"));
+			S3Controller.displayOnConsole(object.getObjectContent());
 
-		// **delete all bucket in S3
-		//s3Controller.deleteAllBucketInS3();
+			// **delete a bucket including all obejcts inside
+			//s3Controller.deleteAllObejctInBucket(bucketName);
+
+			// **delete all bucket in S3
+			//s3Controller.deleteAllBucketInS3();
+
+		}
+
+		// Storing info to DynamoDB:
+		DynamoDBManager dynamoDBManager = new DynamoDBManager();
+		String tableName = "videoInfo";
+
+		dynamoDBManager.createTable(tableName);
+
+		dynamoDBManager.saveAItemToDynamoDB(tableName, "bucketName",
+				bucketName, "videoKey", videoName);
+
+		// **delete all table in DynamoDB
+		//dynamoDBManager.deleteAllTable();
 
 	}
 
-	// Storing info to DynamoDB:
-	DynamoDBManager dynamoDBManager = new DynamoDBManager();
-	String tableName = "videoInfo";
-
-	dynamoDBManager.createTable(tableName);
-
-	dynamoDBManager.saveAItemToDynamoDB(tableName, "bucketName",
-			bucketName, "videoKey", videoName);
-
-	// **delete all table in DynamoDB
-	//dynamoDBManager.deleteAllTable();
+	// Implementing SNS:
+	SNSManager snsManager = new SNSManager();
+	String topic = "videoForum";
+	String subscriberEmail = "kiddkevin01@gmail.com";
+	String message = "Welcome to Awesome Video Forum!!";
+	snsManager.deleteATopic("MyNewTopic");
+	// only needed for first time creating topic
+	//snsManager.createATopic(topic);
+	// only needed for first time suscription
+	//snsManager.subscribeToATopic(topic, subscriberEmail);
+	snsManager.publishToATopic(topic, message);
 
 	response.sendRedirect("videoHome.jsp?status=complete");
 %>

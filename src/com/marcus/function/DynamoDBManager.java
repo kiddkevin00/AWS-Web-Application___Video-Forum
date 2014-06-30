@@ -94,7 +94,6 @@ public class DynamoDBManager {
 
 	}
 
-	// TODO..
 	public List<String> listingAllTables() {
 		List<String> tableList = new ArrayList<String>();
 
