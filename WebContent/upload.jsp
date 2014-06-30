@@ -1,3 +1,4 @@
+<%@page import="com.marcus.function.RDSManager"%>
 <%@page import="com.amazonaws.services.dynamodbv2.model.AttributeValue"%>
 <%@page import="com.marcus.function.DynamoDBManager"%>
 <%@page import="com.amazonaws.services.s3.model.GetObjectRequest"%>
@@ -39,11 +40,7 @@
 		java.io.File savedFile = new File(savedFilePath);
 		savedFile.deleteOnExit();
 
-		// create a sample text file
-		File sampleFile = S3Controller.createSampleFile();
-		System.out
-				.println("Sample File Name : " + sampleFile.getName());
-
+		// storing video to S3:
 		S3Controller s3Controller = new S3Controller();
 		s3Controller.uploadToS3(videoName, bucketName, savedFile);
 
@@ -55,18 +52,15 @@
 						+ "_key"));
 		S3Controller.displayOnConsole(object.getObjectContent());
 
-		ArrayList<String> objectList = new ArrayList<String>();
-		objectList = s3Controller.listObjectName(bucketName);
+		// **delete a bucket including all obejcts inside
+		//s3Controller.deleteAllObejctInBucket(bucketName);
 
-		// delete a bucket including all obejcts inside
-		s3Controller.deleteAllObejctInBucket(bucketName);
-
-		// delete all bucket in S3
-		s3Controller.deleteAllBucketInS3();
+		// **delete all bucket in S3
+		//s3Controller.deleteAllBucketInS3();
 
 	}
 
-	// Storing info to DynamoDB
+	// Storing info to DynamoDB:
 	DynamoDBManager dynamoDBManager = new DynamoDBManager();
 	String tableName = "videoInfo";
 
@@ -75,16 +69,8 @@
 	dynamoDBManager.saveAItemToDynamoDB(tableName, "bucketName",
 			bucketName, "videoKey", videoName);
 
-	List<String> tables = new ArrayList<String>();
-	tables = dynamoDBManager.listingAllTables();
-	//System.out.println("All Table Name : " + tables.get(0)+ "  "+ tables.get(1));
-	List<Map<String, String>> items = new ArrayList<Map<String, String>>();
-	items = dynamoDBManager.listAllItemInATable(tableName);
-	System.out.println("All items : " + items.get(0).get("videoKey")
-			+ items.get(0).get("bucketName"));
-
-	// delete all table in DynamoDB
-	dynamoDBManager.deleteAllTable();
+	// **delete all table in DynamoDB
+	//dynamoDBManager.deleteAllTable();
 
 	response.sendRedirect("videoHome.jsp?status=complete");
 %>
