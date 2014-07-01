@@ -30,10 +30,12 @@
 	// usign DynamoDB to list all videos
 	if (items.size() != 0) {
 		for (Map<String, String> item : items) {
+			/* urlList.add("http://" + item.get("bucketName")
+					+ ".s3.amazonaws.com/" + item.get("videoKey")); */
 			urlList.add("http://" + item.get("bucketName")
-					+ ".s3.amazonaws.com/" + item.get("videoKey"));
+					+ "/" + item.get("videoKey"));
 			System.out.println("http://" + item.get("bucketName")
-					+ ".s3.amazonaws.com/" + item.get("videoKey"));
+					+ "/" + item.get("videoKey"));
 		}
 
 	}

@@ -55,7 +55,7 @@ public class S3Controller {
 			Random random = new Random();
 			// can't use some random number t avoid key naming conflict, will
 			// "cause The specified key does not exist"
-			String s3key = videoName + "_key";
+			String s3key = videoName;
 			System.out.println(s3key);
 
 			AccessControlList acl = new AccessControlList();
