@@ -11,6 +11,8 @@
 	pageEncoding="UTF-8"%>
 <%@page import="com.jspsmart.upload.*"%>
 <%
+	// Some statements are commented only due to debugging purpose, which is denoted by tripple stars
+	// Some commented statements with double stars are some useful tools to clean up S3 and DynamoDB contents
 	long maxSize = 1024 * 1024 * 1024;
 	int uploadCount = 0;
 	String videoName = "";
@@ -26,6 +28,9 @@
 
 		videoName = smartUpload.getRequest()
 				.getParameter("video_title");
+
+		S3Controller s3Controller = new S3Controller();
+		DynamoDBManager dynamoDBManager = new DynamoDBManager();
 
 		if (!videoName.equals("")) {
 			uploadCount = smartUpload.getFiles().getCount();
@@ -49,7 +54,6 @@
 			savedFile.deleteOnExit();
 
 			// storing video to S3:
-			S3Controller s3Controller = new S3Controller();
 			s3Controller.uploadToS3(videoName, bucketName, savedFile);
 
 			ArrayList<String> bucketList = new ArrayList<String>();
@@ -60,45 +64,46 @@
 							videoName));
 			S3Controller.displayOnConsole(object.getObjectContent());
 
-			// **delete a bucket including all obejcts inside
-			//s3Controller.deleteAllObejctInBucket(bucketName);
-
-			// **delete all bucket in S3
-			//s3Controller.deleteAllBucketInS3();
-
 			// Add a distribution and Get the CloudFront domain:
-			CloudFrontManager cloudFrontManager = new CloudFrontManager();
+			/*** CloudFrontManager cloudFrontManager = new CloudFrontManager();
 			String domainName;
 			domainName = cloudFrontManager
 					.getCloudFrontDomain(bucketName);
+			 ***/
 
 			// Storing info to DynamoDB:
-			DynamoDBManager dynamoDBManager = new DynamoDBManager();
 			String tableName = "videoInfo";
 
 			dynamoDBManager.createTable(tableName);
 
 			// changing from storing bucketName to domainName.. 
 			dynamoDBManager.saveAItemToDynamoDB(tableName,
-					"bucketName", domainName, "videoKey", videoName);
+					"bucketName", bucketName, "videoKey", videoName);
 
-			// **delete all table in DynamoDB
-			//dynamoDBManager.deleteAllTable();
 		}
+		// **delete a bucket including all obejcts inside
+		//s3Controller.deleteAllObejctInBucket(bucketName);
+
+		// **delete all bucket in S3
+		//s3Controller.deleteAllBucketInS3();
+		// **delete all table in DynamoDB
+		//dynamoDBManager.deleteAllTable();
 
 	}
 
 	// Implementing SNS:
-	SNSManager snsManager = new SNSManager();
+	/*** SNSManager snsManager = new SNSManager();
 	String topic = "videoForum";
 	String subscriberEmail = "kiddkevin01@gmail.com";
-	String message = "Welcome to Awesome Video Forum!!";
+	String message = "Welcome to Awesome Video Forum!!"; ***/
+
 	//snsManager.deleteATopic("MyNewTopic");
 	// only needed for first time creating topic
 	//snsManager.createATopic(topic);
 	// only needed for first time suscription
 	//snsManager.subscribeToATopic(topic, subscriberEmail);
-	snsManager.publishToATopic(topic, message);
+
+	/*** snsManager.publishToATopic(topic, message); ***/
 
 	response.sendRedirect("videoHome.jsp?status=complete");
 %>
