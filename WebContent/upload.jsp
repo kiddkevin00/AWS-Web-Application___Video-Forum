@@ -76,7 +76,7 @@
 
 			dynamoDBManager.createTable(tableName);
 
-			// changing from storing bucketName to domainName.. 
+			// Due to implementing CloudFront feature, need to change storing item from bucketName to domainName.. 
 			dynamoDBManager.saveAItemToDynamoDB(tableName,
 					"bucketName", bucketName, "videoKey", videoName);
 

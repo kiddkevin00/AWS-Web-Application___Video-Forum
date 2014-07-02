@@ -54,10 +54,16 @@ public class DynamoDBManager {
 					.withProvisionedThroughput(
 							new ProvisionedThroughput().withReadCapacityUnits(
 									1L).withWriteCapacityUnits(1L));
+
 			CreateTableResult result = amazonDynamoDBClient
 					.createTable(request);
 			System.out.println("Created Table : "
 					+ result.getTableDescription());
+			// (necessary) Wait for it to become active
+			System.out.println("Waiting for " + tableName
+					+ " to become ACTIVE...");
+			Tables.waitForTableToBecomeActive(amazonDynamoDBClient, tableName);
+
 		}
 
 	}
