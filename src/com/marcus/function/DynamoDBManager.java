@@ -5,7 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
@@ -31,8 +32,12 @@ public class DynamoDBManager {
 	public AmazonDynamoDBClient amazonDynamoDBClient;
 
 	public DynamoDBManager() {
-		amazonDynamoDBClient = new AmazonDynamoDBClient(
-				new ClasspathPropertiesFileCredentialsProvider());
+		AWSCredentials credentials = new ProfileCredentialsProvider()
+				.getCredentials();
+		// amazonDynamoDBClient = new AmazonDynamoDBClient(
+		// new ClasspathPropertiesFileCredentialsProvider());
+		amazonDynamoDBClient = new AmazonDynamoDBClient(credentials);
+
 		Region region = Region.getRegion(Regions.US_WEST_2);
 		amazonDynamoDBClient.setRegion(region);
 	}

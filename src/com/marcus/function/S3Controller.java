@@ -13,7 +13,8 @@ import java.util.Random;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -32,8 +33,15 @@ public class S3Controller {
 
 	public S3Controller() throws AmazonClientException, AmazonServiceException {
 		try {
-			s3Client = new AmazonS3Client(
-					new ClasspathPropertiesFileCredentialsProvider());
+
+			AWSCredentials credentials = new ProfileCredentialsProvider()
+					.getCredentials();
+			// amazonDynamoDBClient = new AmazonDynamoDBClient(
+			// new ClasspathPropertiesFileCredentialsProvider());
+			s3Client = new AmazonS3Client(credentials);
+
+			// s3Client = new AmazonS3Client(
+			// new ClasspathPropertiesFileCredentialsProvider());
 			Region usWest2 = Region.getRegion(Regions.US_WEST_2);
 			s3Client.setRegion(usWest2);
 		} catch (Exception e) {

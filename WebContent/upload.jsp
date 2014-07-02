@@ -11,8 +11,7 @@
 	pageEncoding="UTF-8"%>
 <%@page import="com.jspsmart.upload.*"%>
 <%
-	// Some statements are commented only due to debugging purpose, which is denoted by tripple stars
-	// Some commented statements with double stars are some useful tools to clean up S3 and DynamoDB contents
+	// Some commented statements with double stars are some additional useful tools to clean up S3 and DynamoDB contents
 	long maxSize = 1024 * 1024 * 1024;
 	int uploadCount = 0;
 	String videoName = "";
@@ -65,11 +64,10 @@
 			S3Controller.displayOnConsole(object.getObjectContent());
 
 			// Add a distribution and Get the CloudFront domain:
-			/*** CloudFrontManager cloudFrontManager = new CloudFrontManager();
+			CloudFrontManager cloudFrontManager = new CloudFrontManager();
 			String domainName;
 			domainName = cloudFrontManager
 					.getCloudFrontDomain(bucketName);
-			 ***/
 
 			// Storing info to DynamoDB:
 			String tableName = "videoInfo";
@@ -92,10 +90,10 @@
 	}
 
 	// Implementing SNS:
-	/*** SNSManager snsManager = new SNSManager();
+	SNSManager snsManager = new SNSManager();
 	String topic = "videoForum";
 	String subscriberEmail = "kiddkevin01@gmail.com";
-	String message = "Welcome to Awesome Video Forum!!"; ***/
+	String message = "Welcome to Awesome Video Forum!!";
 
 	//snsManager.deleteATopic("MyNewTopic");
 	// only needed for first time creating topic
@@ -103,7 +101,7 @@
 	// only needed for first time suscription
 	//snsManager.subscribeToATopic(topic, subscriberEmail);
 
-	/*** snsManager.publishToATopic(topic, message); ***/
+	snsManager.publishToATopic(topic, message);
 
 	response.sendRedirect("videoHome.jsp?status=complete");
 %>
