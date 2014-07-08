@@ -30,17 +30,23 @@
 	// usign DynamoDB to list all videos
 	if (items.size() != 0) {
 		for (Map<String, String> item : items) {
-			urlList.add("http://" + item.get("bucketName")
-					+ ".s3.amazonaws.com/" + item.get("videoKey"));
-			// Implement CloudFront which need to change domain name to the following:
-			/* urlList.add("http://" + item.get("bucketName") + "/"
-				+ item.get("videoKey")); */
-			System.out.println("http://" + item.get("bucketName")
-					+ ".s3.amazonaws.com/" + item.get("videoKey"));
+	urlList.add("http://" + item.get("bucketName")
+	+ ".s3.amazonaws.com/" + item.get("videoKey"));
+	// Implement CloudFront which need to change domain name to the following:
+	/* urlList.add("http://" + item.get("bucketName") + "/"
+		+ item.get("videoKey")); */
+	System.out.println("http://" + item.get("bucketName")
+	+ ".s3.amazonaws.com/" + item.get("videoKey"));
 		}
 
 	}
 %>
+
+<script>
+//print java code in console for debugging
+console.log("here: " + "<%=urlList.size()%>
+	");
+</script>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -199,6 +205,15 @@ body {
 				</p>
 			</div> -->
 	</div>
+	
+	<form style="display:none;" method="post" action="">
+		<%
+			String javaParameter = "some important info generated from this page only";
+			// pass Java parameters from this page to other HTML pages 
+			out.println("<input type='hidden' id='index' name='index' value='"
+					+ javaParameter + "'>");
+		%>
+	</form>
 
 	<hr>
 

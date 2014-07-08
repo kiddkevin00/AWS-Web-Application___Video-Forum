@@ -78,7 +78,10 @@
 		</style>
 	</head>
 	<body>
-
+		<!--
+		(1) ENCTYPE="multipart/form-data" is for uploading multiMedia file
+		(2) if there is no "ACTION=...", it means go to the same page
+		-->
 		<div class="container">
 			<form class="form-signin" role="form" ACTION="./upload.jsp"
 			ENCTYPE="multipart/form-data" method="Post">
@@ -96,9 +99,11 @@
 				</div>
 				<div class="form-group">
 					<!-- <label for="info2" class="col-sm-2 control-label"></label> -->
+					<!-- send something hidden extra along with other parameters -->
 					<div class="col-sm-10">
 						<input type="hidden" id="info2" name="info02" value="anyParameter" >
 					</div>
+					
 				</div>
 
 				<div class="form-group">
