@@ -11,16 +11,16 @@ public class RDSManager {
 	private Connection connect = null;
 	private Statement statement = null;
 	private ResultSet resultSet = null;
-	private String DB_END_POINT = "videoinformation.c0bsfoz3vgce.us-west-2.rds.amazonaws.com:3306";
-	private final String DB_USER_NAME = "marcus";
-	private final String DB_PWD = "0955915528";
-	private final String DB_NAME = "videoForum";
-	private final int DB_PORT = 3306;
+	private String DB_END_POINT = "YOUR_DB_END_POINT";
+	private final String DB_USER_NAME = "YOUR_DB_USER_NAME";
+	private final String DB_PWD = "YOUR_DB_PASSWORD";
+	private final String DB_NAME = "YOUR_DB_NAME";
+	private final int DB_PORT = 3306; // default port number
 
 	public void createConnectionAndStatement() {
 		try {
 			// This will load the MySQL driver, each DB has its own driver
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			Class.forName("com.mysql.jdbc.OracleDriver").newInstance();
 			// Setup the connection with the DB
 			connect = (Connection) DriverManager.getConnection("jdbc:mysql://"
 					+ DB_END_POINT + ":" + DB_PORT + "/" + DB_NAME,
