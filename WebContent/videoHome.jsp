@@ -1,6 +1,6 @@
-<%@page import="com.marcus.function.DynamoDBManager"%>
-<%@page import="java.util.*"%>
-<%@page import="com.marcus.function.S3Controller"%>
+<%@ page import="com.marcus.function.DynamoDBManager"%>
+<%@ page import="java.util.*"%>
+<%@ page import="com.marcus.function.S3Controller"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 

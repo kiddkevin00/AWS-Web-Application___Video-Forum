@@ -1,17 +1,20 @@
-<%@page import="com.marcus.function.CloudFrontManager"%>
-<%@page import="com.marcus.function.SNSManager"%>
-<%@page import="com.marcus.function.RDSManager"%>
-<%@page import="com.amazonaws.services.dynamodbv2.model.AttributeValue"%>
-<%@page import="com.marcus.function.DynamoDBManager"%>
-<%@page import="com.amazonaws.services.s3.model.GetObjectRequest"%>
-<%@page import="java.util.*"%>
-<%@page import="java.io.File"%>
-<%@page import="com.marcus.function.S3Controller"%>
+<%@ page import="com.marcus.function.CloudFrontManager"%>
+<%@ page import="com.marcus.function.SNSManager"%>
+<%@ page import="com.marcus.function.RDSManager"%>
+<%@ page import="com.amazonaws.services.dynamodbv2.model.AttributeValue"%>
+<%@ page import="com.marcus.function.DynamoDBManager"%>
+<%@ page import="com.amazonaws.services.s3.model.GetObjectRequest"%>
+<%@ page import="java.util.*"%>
+<%@ page import="java.io.File"%>
+<%@ page import="com.marcus.function.S3Controller"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@page import="com.jspsmart.upload.*"%>
+<%@ page import="com.jspsmart.upload.*"%>
 <%
-	// Some commented statements with double stars are some additional useful tools to clean up S3 and DynamoDB contents
+	/*
+	 * Some commented statements with double stars are some additional 
+	 * useful tools to clean up S3 and DynamoDB contents
+	 */
 	long maxSize = 1024 * 1024 * 1024;
 	int uploadCount = 0;
 	String videoName = "";
@@ -74,7 +77,10 @@
 
 			dynamoDBManager.createTable(tableName);
 
-			// Due to implementing CloudFront feature, need to change storing item from bucketName to domainName.. 
+			/* 
+			 * Due to implementing CloudFront feature, need to change storing 
+			 * item from bucketName to domainName..
+			 */
 			dynamoDBManager.saveAItemToDynamoDB(tableName,
 					"bucketName", bucketName, "videoKey", videoName);
 
