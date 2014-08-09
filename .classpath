@@ -18,6 +18,6 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/Users/Marcus/Documents/workspace/AmazonWebServicesDemo_VideoForum/src/smartupload.jar"/>
+	<classpathentry kind="lib" path="src/smartupload.jar"/>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
