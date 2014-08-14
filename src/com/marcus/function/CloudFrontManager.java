@@ -1,6 +1,7 @@
 package com.marcus.function;
 
-import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.cloudfront.AmazonCloudFrontClient;
@@ -24,8 +25,10 @@ public class CloudFrontManager {
 	public AmazonCloudFrontClient amazonCloudFrontClient;
 
 	public CloudFrontManager() {
-		amazonCloudFrontClient = new AmazonCloudFrontClient(
-				new ClasspathPropertiesFileCredentialsProvider());
+		AWSCredentials credentials = new ProfileCredentialsProvider()
+				.getCredentials();
+		amazonCloudFrontClient = new AmazonCloudFrontClient(credentials);
+
 		Region region = Region.getRegion(Regions.US_WEST_2);
 		amazonCloudFrontClient.setRegion(region);
 	}

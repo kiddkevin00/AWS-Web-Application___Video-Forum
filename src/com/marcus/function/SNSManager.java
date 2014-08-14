@@ -1,6 +1,7 @@
 package com.marcus.function;
 
-import com.amazonaws.auth.ClasspathPropertiesFileCredentialsProvider;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sns.AmazonSNSClient;
@@ -17,8 +18,11 @@ public class SNSManager {
 
 	public SNSManager() {
 		// create a new SNS client and set endpoint
-		snsClient = new AmazonSNSClient(
-				new ClasspathPropertiesFileCredentialsProvider());
+		AWSCredentials credentials = new ProfileCredentialsProvider()
+				.getCredentials();
+		snsClient = new AmazonSNSClient(credentials);
+
+		Region region = Region.getRegion(Regions.US_WEST_2);
 		snsClient.setRegion(Region.getRegion(Regions.US_WEST_2));
 	}
 
